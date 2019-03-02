@@ -1,25 +1,33 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Switch, Redirect, Route } from 'react-router-dom';
+import Header from './components/misc/Header';
+import UserForm from './components/UserForm';
+import Users from './components/Users';
 
 class App extends Component {
+  state = {
+    users: [],
+    redirectToUsersList: false
+  }
+
+  addUser = (user, cb) => {
+    this.setState({ users: [...this.state.users, user], redirectToUsersList: true }, cb);
+  }
+
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+        <Header/>
+
+        <section className="section">
+          <div className="container">
+            <Switch>
+              <Route exact path="/users" component={() => <Users users={this.state.users} />} />
+              <Route exact path="/users/new" component={() => <UserForm onAddUser={this.addUser}/>}/>
+              <Redirect to='/users'/>
+            </Switch>
+          </div>
+        </section>
       </div>
     );
   }
